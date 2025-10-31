@@ -1,4 +1,4 @@
-import { db } from "../database/connection.ts";
+import db from "../database/connection.ts";
 
 
 export interface Voo {

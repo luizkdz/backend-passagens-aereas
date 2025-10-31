@@ -1,9 +1,10 @@
 import mysql from 'mysql2/promise';
 
-
-export const db = mysql.createPool({
+const db = mysql.createPool({
   host: 'localhost',
   user: 'root',
   password: 'root',
   database: 'passagens_aereas_bd'
 });
+
+export default db;
