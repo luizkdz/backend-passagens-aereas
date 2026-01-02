@@ -7,3 +7,4 @@ export const voosRouter = Router();
 
 voosRouter.get('/', voosController.listar);
 voosRouter.get('/:id', voosController.buscarPorId);
+voosRouter.get('/buscar-voos', voosController.listarBuscados);
