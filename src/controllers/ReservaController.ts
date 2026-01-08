@@ -24,6 +24,18 @@ class ReservaController{
             return res.status(500).json({message:"Erro interno do servidor"});
         }
     }
+
+    buscarReserva = async (req: Request, res:Response) => {
+        try{
+            const reserva_id = req.query.reserva_id;
+            const reserva = await this.reservaRepository.buscarReserva(Number(reserva_id));
+            return res.status(200).json(reserva);
+        }   
+        catch(err){
+            console.log(err);
+            return res.status(500).json({message:"Erro interno do servidor"});
+        }
+    }
 }
 
 export default ReservaController;

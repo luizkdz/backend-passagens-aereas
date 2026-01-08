@@ -12,6 +12,8 @@ import { VoosController } from './controllers/voosController.ts';
 import ReservaController from './controllers/ReservaController.ts';
 import ReservaRepository from './repositories/ReservaRepository.ts';
 import { verificarTokenCheckout } from './middlewares/verificarTokenCheckout.ts';
+import PagamentoController from './controllers/PagamentoController.ts';
+import StripeWebhookController from './webhooks/stripeWebHook.ts';
 dotenv.config();
 
 const app = express();
@@ -19,6 +21,13 @@ app.use(cors({
   origin: "http://localhost:5173", // seu frontend
   credentials: true, // ✅ permite cookies
 }));
+const stripeWebHookController = new StripeWebhookController();
+app.post(
+  "/stripe", // precisa ser exatamente POST
+  express.raw({ type: "application/json" }), // body cru necessário para Stripe
+  stripeWebHookController.handleWebhook
+);
+
 app.use(express.json());
 
 app.use(cookieParser());
@@ -38,6 +47,8 @@ const authController = new AuthController();
 const voosController = new VoosController();
 const reservaRepository = new ReservaRepository();
 const reservaController = new ReservaController(reservaRepository);
+const pagamentoController = new PagamentoController();
+
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
 
@@ -58,3 +69,10 @@ app.get('/buscar-voos', voosController.listarBuscados);
 app.get('/buscar-voo/:id', voosController.buscarPorId);
 
 app.post('/reservas',verificarTokenCheckout,reservaController.inserirReserva);
+
+app.post('/criar-pagamento-cartao', verificarTokenCheckout, pagamentoController.criarPagamentoCartao);
+
+app.get('/buscar-reserva', reservaController.buscarReserva)
+
+app.post('/criar-pagamento-boleto', verificarTokenCheckout, pagamentoController.criarPagamentoBoleto);
+
